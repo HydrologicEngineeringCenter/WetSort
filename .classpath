@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="dist/WetSort.jar"/>
+	<classpathentry kind="lib" path="jar/hec.jar"/>
+	<classpathentry kind="lib" path="jar/hecData.jar"/>
+	<classpathentry kind="lib" path="jar/heclib.jar"/>
+	<classpathentry kind="lib" path="jar/junit-platform-console-standalone-1.3.1.jar"/>
+	<classpathentry kind="lib" path="jar/lookup.jar"/>
+	<classpathentry kind="lib" path="jar/rma.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
