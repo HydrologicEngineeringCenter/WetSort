@@ -19,15 +19,19 @@ import javax.swing.*;
 /**
  *
  * @author  Donald Johnons
+ * 
+ * Updates Dec 2018  -- Karl Tarbet
+ * 
+ * Version 1.0.1
  *
- *  This class program caculates the wetsort value from stage data over a user detrmined periods
+ *  This class program calculates the wetsort value from stage data over a user determined periods
  *
  *  The wet sort values is the maximum of the windowed minimums from the stage data. The size of the
  *  window used depends on the duration being calculated
  *
- *  The default durations are 2.5%,5%, 7.5%, 10% and 12.5%, arbitray durations can be calculated
+ *  The default durations are 2.5%,5%, 7.5%, 10% and 12.5%, arbitrary durations can be calculated
  *
- *  The class was extened to provide the ability to calculate aditional statistics for classifing the type 
+ *  The class was extended to provide the ability to calculate additional statistics for classifying the type 
  *  of a stream based on its recorded stages and/or flows 
  */
 public class WetSortWin extends javax.swing.JFrame {
@@ -973,8 +977,6 @@ public class WetSortWin extends javax.swing.JFrame {
     
     public void loadDSSFile()
     {
-        int rv;
-        
         // close the old time series if one exists
         closeDSSFile();
         
@@ -982,10 +984,8 @@ public class WetSortWin extends javax.swing.JFrame {
         ts = new HecTimeSeries();
           
         // open the interfaces to the dss file
-        rv = ts.setDSSFileName(lastFile.getAbsolutePath(),true);
+        int rv = ts.setDSSFileName(lastFile.getAbsolutePath(),true);
         
-        
-        java.util.Vector paths = new java.util.Vector();
         
         CondensedReference[] cr = ts.getCondensedCatalog("");
         
@@ -1108,7 +1108,7 @@ public class WetSortWin extends javax.swing.JFrame {
         
     }
     
-    /** Respond to the sellection of a DSS Path */
+    /** Respond to the selection of a DSS Path */
     
     private void jPathTableValueChanged(javax.swing.event.ListSelectionEvent e)
     {
@@ -1133,7 +1133,7 @@ public class WetSortWin extends javax.swing.JFrame {
         boolean selectionFound = false;
         
         selectedPaths.clear();
-        
+      
         for( int i = 0; i < pathTableModel.getRowCount(); ++i )
         {
             if ( lsm.isSelectedIndex(i))
