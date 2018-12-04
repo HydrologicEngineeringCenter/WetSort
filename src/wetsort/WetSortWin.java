@@ -6,15 +6,19 @@
 
 package wetsort;
 
-import hec.heclib.dss.*;
-import hec.heclib.util.*;
-import hec.io.*;             // Has TimeSeriesContainer
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.prefs.Preferences;
 
-import java.util.prefs.*;
-import java.util.*;
-import java.text.*;
-
-import javax.swing.*;
+import hec.heclib.dss.CondensedReference;
+import hec.heclib.dss.HecTimeSeries;
+import hec.heclib.util.HecDouble;
+import hec.heclib.util.HecDoubleArray;
+import hec.heclib.util.HecTime;
+import hec.heclib.util.HecTimeArray;
+// Has TimeSeriesContainer
+import hec.io.TimeSeriesContainer;
 
 /**
  *
@@ -978,10 +982,10 @@ public class WetSortWin extends javax.swing.JFrame {
     public void loadDSSFile()
     {
         // close the old time series if one exists
-        closeDSSFile();
+    	pathTableModel.setRowCount(0);
         
         // make a new time series
-        ts = new HecTimeSeries();
+    	HecTimeSeries ts = new HecTimeSeries();
           
         // open the interfaces to the dss file
         ts.setDSSFileName(lastFile.getAbsolutePath(),true);
@@ -995,9 +999,7 @@ public class WetSortWin extends javax.swing.JFrame {
         	   pathTableModel.addRow(r.toString().substring(1).split("/"));
 		}
                 
-       // rv = ts.searchDSSCatalog("",paths);
-        
-        
+        closeDSSFile(ts);
         jPathTable.clearSelection();
         
         if ( jPathTable.getRowCount() > 0)
@@ -1008,7 +1010,7 @@ public class WetSortWin extends javax.swing.JFrame {
     
     /** Close the the file pointed to by the Timeseries Reference and set it to null */
     
-    private void closeDSSFile()
+    private void closeDSSFile(HecTimeSeries ts)
     {       
         if ( ts != null )
         {
@@ -1023,7 +1025,7 @@ public class WetSortWin extends javax.swing.JFrame {
         }
         
         // clear the path display list
-        pathTableModel.setRowCount(0);
+        //pathTableModel.setRowCount(0);
     }
     
     /**  Initalize the program variables and the GUI */
@@ -1295,6 +1297,9 @@ public class WetSortWin extends javax.swing.JFrame {
             data.add(new ArrayList<YearData>(numYears));              
         }        
         
+
+        HecTimeSeries ts = new HecTimeSeries();
+        ts.setDSSFileName(lastFile.getAbsolutePath());
         for( int i = 0; i < numYears; ++i )
         {
             String s1 = windowStart + Integer.toString(start + i);
@@ -1303,8 +1308,9 @@ public class WetSortWin extends javax.swing.JFrame {
             startTime = new HecTime(s1);
             stopTime = new HecTime(s2);
             
-            if ( startTime.greaterThanEqualTo(stopTime) )
+            if ( startTime.julian() > stopTime.julian() )
             {
+            	System.out.println("Error with Date Range");
                 s2 = windowStop + Integer.toString(i+1);
                 stopTime = new HecTime(s2);
             }
@@ -1314,14 +1320,23 @@ public class WetSortWin extends javax.swing.JFrame {
                 // determine the number of days for each durations   
                 wsCalcDurationDays();              
             }
+			System.out.println("path:"+currentPath);
+			TimeSeriesContainer c = new TimeSeriesContainer();
+            c.fullName = currentPath;
+           
+            c.endTime = stopTime.value();
+            c.startTime = startTime.value();
+                  
             
-            ts.setPathname(currentPath);
-            ts.setTimeWindow(startTime,stopTime);
-            
-            days = new HecTimeArray();
-            values = new HecDoubleArray();            
-            
-            int rv = ts.read(days,values);
+          int status = ts.read(c, true);
+          if( status != 0)
+          {
+        	  System.out.println("Error: ts.read "+status);
+        	  continue;
+          }
+          values = new HecDoubleArray(c.values);
+          days = new HecTimeArray(c.times);
+          
             
             wsCalcYearStats(i);
         }
@@ -1736,6 +1751,7 @@ public class WetSortWin extends javax.swing.JFrame {
         {
             data.add(new ArrayList<YearData>(numYears));              
         }        
+        HecTimeSeries ts =new HecTimeSeries();
         
         for( int i = 0; i < numYears; ++i )
         {
@@ -1744,6 +1760,8 @@ public class WetSortWin extends javax.swing.JFrame {
             
             startTime = new HecTime(s1);
             stopTime = new HecTime(s2);
+            
+       
             
             ts.setPathname(currentPath);
             ts.setTimeWindow(startTime,stopTime);
@@ -1766,6 +1784,7 @@ public class WetSortWin extends javax.swing.JFrame {
         vsCalcRangeAndSpread();
         
         vsWriteTable();
+        closeDSSFile(ts);
                 
     }    
     
@@ -4442,7 +4461,7 @@ public class WetSortWin extends javax.swing.JFrame {
     // HEC varaiables
     
     /** Object for reading timeseries data from a DSS file */
-    private HecTimeSeries ts;
+    //private HecTimeSeries ts;
     
     /** The dates associated with the currenty read of data */
     private HecTimeArray days;
