@@ -987,59 +987,14 @@ public class WetSortWin extends javax.swing.JFrame {
         
         java.util.Vector paths = new java.util.Vector();
         
+        CondensedReference[] cr = ts.getCondensedCatalog("");
+        
+        for (int i = 0; i < cr.length; i++) {        	
+        	pathTableModel.addRow(cr[i].toString().substring(1).split("/"));
+		}
+                
         rv = ts.searchDSSCatalog("",paths);
         
-        outer: for ( int i = 0; i < paths.size(); ++i )
-        {
-            // get the selected path and added it to the display list
-            String selectedPath = (String) paths.elementAt(i);
-            
-            // break the selected path into segments
-            String[] selectedParts = selectedPath.substring(1).split("/");
-            
-            if ( selectedParts[3].equals("") )
-            {
-                continue;
-            }
-            
-            if ( new HecTime(selectedParts[3]).isDefined() == false )
-            {
-                continue;
-            }
-            
-            // the current path and parts 
-            String currentPath; 
-            String[] currentParts; 
-           
-            ++i;
-            do
-            {    
-                //advance to the next path and get it
-                currentPath = (String) paths.elementAt(i);
-                currentParts = currentPath.substring(1).split("/");
-            } while ( selectedParts[0].equals(currentParts[0]) &&
-                     selectedParts[1].equals(currentParts[1]) &&
-                     selectedParts[2].equals(currentParts[2]) &&
-                     selectedParts[4].equals(currentParts[4]) &&
-                     selectedParts[5].equals(currentParts[5]) &&
-                     ++i < paths.size() );
-           
-            --i;
-            currentPath = (String) paths.elementAt(i);
-            currentParts = currentPath.substring(1).split("/");
-           
-            // make the display string that hold D range
-            java.util.Vector path = new java.util.Vector();
-            path.add(selectedParts[0]);
-            path.add(selectedParts[1]);
-            path.add(selectedParts[2]);
-            path.add(selectedParts[3] + " - " + currentParts[3]);
-            path.add(selectedParts[4]);
-            path.add(selectedParts[5]); 
-           
-            pathTableModel.addRow(path);
-           
-        }
         
         jPathTable.clearSelection();
         
@@ -1049,7 +1004,7 @@ public class WetSortWin extends javax.swing.JFrame {
         }
     }
     
-    /** Close the the file pointed to by the Timeseries Refernce and set it to null */
+    /** Close the the file pointed to by the Timeseries Reference and set it to null */
     
     private void closeDSSFile()
     {       
