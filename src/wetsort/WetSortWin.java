@@ -993,7 +993,7 @@ public class WetSortWin extends javax.swing.JFrame {
         	pathTableModel.addRow(cr[i].toString().substring(1).split("/"));
 		}
                 
-        rv = ts.searchDSSCatalog("",paths);
+       // rv = ts.searchDSSCatalog("",paths);
         
         
         jPathTable.clearSelection();
