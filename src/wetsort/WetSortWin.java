@@ -984,13 +984,15 @@ public class WetSortWin extends javax.swing.JFrame {
         ts = new HecTimeSeries();
           
         // open the interfaces to the dss file
-        int rv = ts.setDSSFileName(lastFile.getAbsolutePath(),true);
+        ts.setDSSFileName(lastFile.getAbsolutePath(),true);
         
         
         CondensedReference[] cr = ts.getCondensedCatalog("");
         
-        for (int i = 0; i < cr.length; i++) {        	
-        	pathTableModel.addRow(cr[i].toString().substring(1).split("/"));
+        for (int i = 0; i < cr.length; i++) {      
+        	CondensedReference r =cr[i];    // /30330/LITTLETALLA-BATESVILLE/FLOW/01JAN1906/IR-YEAR/CALC/
+        	if(r.getNominalPathname().toLowerCase().indexOf("1day") >0  )
+        	   pathTableModel.addRow(r.toString().substring(1).split("/"));
 		}
                 
        // rv = ts.searchDSSCatalog("",paths);
@@ -1281,7 +1283,7 @@ public class WetSortWin extends javax.swing.JFrame {
         int start = Integer.parseInt(startYear);
         int stop = Integer.parseInt(stopYear);
         
-        // initlize the main data structors
+        // initialize the main data structures
         
         // determine the number of years that will be run
         numYears = stop - start + 1;
@@ -1374,7 +1376,7 @@ public class WetSortWin extends javax.swing.JFrame {
         HecDouble minVal = new HecDouble();
         HecDouble diffVal = new HecDouble();
         
-        // set the inital values with the first window
+        // set the initial values with the first window
         wsCalcWindowMinDiff(0,numDays,currentVal,currentDiff);
         currentDate = days.element(0);
         
@@ -1394,7 +1396,7 @@ public class WetSortWin extends javax.swing.JFrame {
        
     }
     
-    /** Find the minimum value in a window of data and the differnece ebetween the windows min and max */
+    /** Find the minimum value in a window of data and the difference between the windows min and max */
     
     private void wsCalcWindowMinDiff(int startPos, int windowSize, HecDouble minVal, HecDouble diff)
     {
@@ -1474,7 +1476,7 @@ public class WetSortWin extends javax.swing.JFrame {
                 median_val.add(i,data.get(i).get(pos).hecValue());
             }
             
-            // get the mean value and mean differnce
+            // get the mean value and mean difference
             
             double mean = 0.0;
             double diff = 0.0;
@@ -1715,14 +1717,14 @@ public class WetSortWin extends javax.swing.JFrame {
         stopYear = jStopYearField.getText();        
     }
     
-    /** Calculate statistics ussing the data in the selected path */
+    /** Calculate statistics using the data in the selected path */
     
     private void vsRunPath()
     { 
         int start = Integer.parseInt(startYear);
         int stop = Integer.parseInt(stopYear);
         
-        // initlize the main data structors
+        // initialize the main data structures
         
         // determine the number of years that will be run
         numYears = stop - start + 1;
