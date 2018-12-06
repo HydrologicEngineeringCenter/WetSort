@@ -26,7 +26,6 @@ import hec.io.TimeSeriesContainer;
  * 
  * Updates Dec 2018  -- Karl Tarbet
  * 
- * Version 1.0.2
  *
  *  This class program calculates the wetsort value from stage data over a user determined periods
  *
@@ -40,6 +39,8 @@ import hec.io.TimeSeriesContainer;
  */
 public class WetSortWin extends javax.swing.JFrame {
     
+	static String version ="1.0.3";
+	
     /** Creates a new WetSortWin */
     public WetSortWin() {
         initComponents();
@@ -176,7 +177,7 @@ public class WetSortWin extends javax.swing.JFrame {
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Wet Sort");
+        setTitle("Wet Sort "+version);
         setName("WetSortFrame");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
