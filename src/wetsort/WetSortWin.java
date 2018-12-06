@@ -26,7 +26,7 @@ import hec.io.TimeSeriesContainer;
  * 
  * Updates Dec 2018  -- Karl Tarbet
  * 
- * Version 1.0.1
+ * Version 1.0.2
  *
  *  This class program calculates the wetsort value from stage data over a user determined periods
  *
@@ -1323,7 +1323,6 @@ public class WetSortWin extends javax.swing.JFrame {
 			System.out.println("path:"+currentPath);
 			TimeSeriesContainer c = new TimeSeriesContainer();
             c.fullName = currentPath;
-           
             c.endTime = stopTime.value();
             c.startTime = startTime.value();
                   
@@ -1343,6 +1342,8 @@ public class WetSortWin extends javax.swing.JFrame {
         
         wsCalcSummaryStats();
         wsWriteTable();
+        
+        closeDSSFile(ts);
     }
     
     /** Calculate the number of days in each duration */
@@ -1351,8 +1352,9 @@ public class WetSortWin extends javax.swing.JFrame {
     {
        duration_length.clear();
        
-       int numDays = startTime.computeNumberIntervals(stopTime, 1440);
-       
+      // int numDays = startTime.computeNumberIntervals(stopTime, 1440);
+      int numDays = stopTime.julian() - startTime.julian() +1; 
+    		  
        double val;
        
        for( int i = 0 ; i < durations.size(); ++i )
@@ -1751,7 +1753,8 @@ public class WetSortWin extends javax.swing.JFrame {
         {
             data.add(new ArrayList<YearData>(numYears));              
         }        
-        HecTimeSeries ts =new HecTimeSeries();
+        HecTimeSeries ts = new HecTimeSeries();
+        ts.setDSSFileName(lastFile.getAbsolutePath());
         
         for( int i = 0; i < numYears; ++i )
         {
@@ -1761,17 +1764,23 @@ public class WetSortWin extends javax.swing.JFrame {
             startTime = new HecTime(s1);
             stopTime = new HecTime(s2);
             
-       
+            TimeSeriesContainer c = new TimeSeriesContainer();
+            c.fullName = currentPath;
+            c.endTime = stopTime.value();
+            c.startTime = startTime.value();
+                  
+            int status = ts.read(c, true);
+            if( status != 0)
+            {
+          	  System.out.println("Error: ts.read "+status);
+          	  continue;
+            }
+            values = new HecDoubleArray(c.values);
+            days = new HecTimeArray(c.times);
             
-            ts.setPathname(currentPath);
-            ts.setTimeWindow(startTime,stopTime);
+            int rv = ts.read(c,true);
             
-            days = new HecTimeArray();
-            values = new HecDoubleArray();            
-            
-            int rv = ts.read(days,values);
-            
-            if ( rv > 0 )
+            if ( rv == 0 )
             {
                 vsCalcYearStats();
                 
