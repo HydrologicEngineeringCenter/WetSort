@@ -39,7 +39,7 @@ import hec.io.TimeSeriesContainer;
  */
 public class WetSortWin extends javax.swing.JFrame {
     
-	static String version ="1.0.3";
+	static String version ="1.0.4";
 	
     /** Creates a new WetSortWin */
     public WetSortWin() {
